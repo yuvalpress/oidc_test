@@ -22,8 +22,9 @@ jobs:
         id: idtoken
         with:
           script: |
+            const coredemo = require('@actions/core')
             const audience = 'yuvalpress'
-            let id_token = await core.getIDToken(audience)
+            let id_token = await coredemo.getIDToken(audience)
             core.setOutput('id_token', id_token)
 
 
