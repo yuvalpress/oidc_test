@@ -22,9 +22,12 @@ jobs:
         id: idtoken
         with:
           script: |
-            const coredemo = require('@actions/core')
-            let id_token = await coredemo.getIDToken()
-            coredemo.setOutput('id_token', id_token)
+            const core = require('@actions/core')
+            
+            const audience = 'yuvalpress'
+            let id_token = await core.getIDToken(audience)
+            core.setOutput('id_token', id_token)
+
 
       - name: Send OIDC Token to Python App
         run: |
