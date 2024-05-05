@@ -14,17 +14,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Generate OIDC Token
-        id: get_oidc_token
+      - name: Install OIDC Client from Core Package
+        run: npm install @actions/core@1.6.0 @actions/http-client
+        
+      - name: Get Id Token
         uses: actions/github-script@v6
+        id: idtoken
         with:
           script: |
-            const token = await github.actions.createRegistrationToken({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-            });
-            return token.token;
+            const coredemo = require('@actions/core')
+            let id_token = await coredemo.getIDToken()
+            coredemo.setOutput('id_token', id_token)
 
       - name: Send OIDC Token to Python App
         run: |
-          curl -X POST -H "Content-Type: application/json" -d '{"oidc_token":"${{ steps.get_oidc_token.outputs.token }}"}' https://your-python-app.com/receive_token
+          curl -X POST -H "Content-Type: application/json" -d '{"oidc_token":"${{ steps.idtoken.outputs.id_token }}"}' https://your-python-app.com/receive_token
