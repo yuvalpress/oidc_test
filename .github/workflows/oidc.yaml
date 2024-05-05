@@ -1,0 +1,30 @@
+name: Send OIDC Token to Python App
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  send_token:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Generate OIDC Token
+        id: get_oidc_token
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const token = await github.actions.createRegistrationToken({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+            return token.token;
+
+      - name: Send OIDC Token to Python App
+        run: |
+          curl -X POST -H "Content-Type: application/json" -d '{"oidc_token":"${{ steps.get_oidc_token.outputs.token }}"}' https://your-python-app.com/receive_token
