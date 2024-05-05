@@ -28,4 +28,7 @@ jobs:
 
       - name: Send OIDC Token to Python App
         run: |
-          curl -X POST -H "Content-Type: application/json" -d '{"oidc_token":"${{ steps.idtoken.outputs.id_token }}"}' https://your-python-app.com/receive_token
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{"oidc_token": "${{ steps.idtoken.outputs.id_token }}"}' \
+          https://dygixku4ksw7onudfudngsiode0jfano.lambda-url.eu-west-1.on.aws/
+
